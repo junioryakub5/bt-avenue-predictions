@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BT Avenue - Football Predictions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        header h1 span {
+            color: #e63946;
+        }
+
+        header p {
+            color: #8892a0;
+            font-size: 1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .preview-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #e63946;
+            border-radius: 2px;
+        }
+
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 80px 1fr 70px auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            color: #8892a0;
+        }
+
+        .form-group input, .form-group select {
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #e63946;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-group input::placeholder {
+            color: #6b7280;
+        }
+
+        .form-group select option {
+            background: #1a2a4a;
+            color: #fff;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-add {
+            background: #e63946;
+            color: #fff;
+        }
+
+        .btn-add:hover {
+            background: #c5303c;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-clear {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-clear:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .matches-list {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .match-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #e63946;
+        }
+
+        .match-info {
+            flex: 1;
+        }
+
+        .match-teams {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .match-prediction {
+            font-size: 0.85rem;
+            color: #10b981;
+            margin-top: 3px;
+        }
+
+        .match-odds {
+            font-weight: 700;
+            color: #fbbf24;
+            margin-right: 15px;
+        }
+
+        .match-status {
+            display: flex;
+            gap: 5px;
+            margin-right: 10px;
+        }
+
+        .btn-status {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-status.win {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .btn-status.win:hover, .btn-status.win.active {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .btn-status.lose {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .btn-status.lose:hover, .btn-status.lose.active {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-remove {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-remove:hover {
+            background: rgba(239, 68, 68, 0.4);
+        }
+
+        /* Preview Canvas Container */
+        .preview-container {
+            background: #f0f0f0;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 15px;
+            overflow: auto;
+            max-height: 600px;
+        }
+
+        #previewCanvas {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .total-odds {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #e63946 0%, #c5303c 100%);
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .total-odds span:first-child {
+            font-size: 1rem;
+        }
+
+        .total-odds span:last-child {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .empty-state svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .date-input-group {
+            margin-bottom: 15px;
+        }
+
+        .saved-slips {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .saved-slips h3 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #8892a0;
+        }
+
+        .slip-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .slip-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .slip-item.active {
+            border-left: 3px solid #10b981;
+        }
+
+        .slip-info {
+            font-size: 0.9rem;
+        }
+
+        .slip-date {
+            color: #8892a0;
+            font-size: 0.8rem;
+        }
+
+        .btn-delete-slip {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BT <span>AVENUE</span></h1>
+            <p>Football Predictions Generator</p>
+        </header>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title">Add Predictions</h2>
+                
+                <div class="date-input-group">
+                    <div class="form-group">
+                        <label>Date for Predictions</label>
+                        <input type="date" id="predictionDate">
+                    </div>
+                </div>
+
+                <div class="input-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Home Team</label>
+                            <input type="text" id="team1" placeholder="e.g. Sassuolo">
+                        </div>
+                        <div class="form-group">
+                            <label>Away Team</label>
+                            <input type="text" id="team2" placeholder="e.g. Juventus">
+                        </div>
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input type="time" id="matchTime" value="15:00">
+                        </div>
+                        <div class="form-group">
+                            <label>Prediction</label>
+                            <select id="prediction">
+                                <option value="1.5 Over">1.5 Over</option>
+                                <option value="1.5 Under">1.5 Under</option>
+                                <option value="2.5 Over">2.5 Over</option>
+                                <option value="2.5 Under">2.5 Under</option>
+                                <option value="3.5 Over">3.5 Over</option>
+                                <option value="3.5 Under">3.5 Under</option>
+                                <option value="BTTS YES">BTTS YES</option>
+                                <option value="BTTS NO">BTTS NO</option>
+                                <option value="Home Win">Home Win</option>
+                                <option value="Away Win">Away Win</option>
+                                <option value="Draw">Draw</option>
+                                <option value="Home 0.5 Over">Home 0.5 Over</option>
+                                <option value="Away 0.5 Over">Away 0.5 Over</option>
+                                <option value="HT 1.5 Over">HT 1.5 Over</option>
+                                <option value="HT 1.5 Under">HT 1.5 Under</option>
+                                <option value="Double Chance 1X">Double Chance 1X</option>
+                                <option value="Double Chance X2">Double Chance X2</option>
+                                <option value="Double Chance 12">Double Chance 12</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Odds</label>
+                            <input type="number" id="odds" placeholder="1.50" step="0.01" min="1">
+                        </div>
+                        <button class="btn btn-add" onclick="addMatch()">+</button>
+                    </div>
+                </div>
+
+                <div class="matches-list" id="matchesList">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        <p>No matches added yet.<br>Add your first prediction above!</p>
+                    </div>
+                </div>
+
+                <div class="total-odds" id="totalOddsDisplay" style="display: none;">
+                    <span>Total Odds:</span>
+                    <span id="totalOddsValue">0.00</span>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-clear" onclick="clearAll()">Clear All</button>
+                    <button class="btn btn-download" onclick="downloadImage()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download PNG
+                    </button>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-add" style="width: 100%;" onclick="saveSlip()">Save Slip</button>
+                </div>
+
+                <div class="saved-slips" id="savedSlipsSection" style="display: none;">
+                    <h3>Saved Slips</h3>
+                    <div id="savedSlipsList"></div>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <h2 class="section-title">Preview</h2>
+                <div class="preview-container">
+                    <canvas id="previewCanvas" width="600" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let matches = [];
+        let savedSlips = JSON.parse(localStorage.getItem('btAvenueSlips')) || [];
+        let currentSlipId = null;
+        const canvas = document.getElementById('previewCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set default date to today
+        document.getElementById('predictionDate').valueAsDate = new Date();
+
+        // Allow Enter key to add match
+        document.querySelectorAll('.form-row input').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addMatch();
+            });
+        });
+
+        function addMatch() {
+            const team1 = document.getElementById('team1').value.trim();
+            const team2 = document.getElementById('team2').value.trim();
+            const matchTime = document.getElementById('matchTime').value;
+            const prediction = document.getElementById('prediction').value;
+            const odds = parseFloat(document.getElementById('odds').value);
+
+            if (!team1 || !team2 || !odds) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            matches.push({ team1, team2, time: matchTime, prediction, odds, status: 'pending' });
+            updateMatchesList();
+            updatePreview();
+            
+            // Clear inputs
+            document.getElementById('team1').value = '';
+            document.getElementById('team2').value = '';
+            document.getElementById('odds').value = '';
+            document.getElementById('team1').focus();
+        }
+
+        function removeMatch(index) {
+            matches.splice(index, 1);
+            updateMatchesList();
+            updatePreview();
+            autoSaveCurrentSlip();
+        }
+
+        function setMatchStatus(index, status) {
+            matches[index].status = matches[index].status === status ? 'pending' : status;
+            updateMatchesList();
+            updatePreview();
+            autoSaveCurrentSlip();
+        }
+
+        function clearAll() {
+            matches = [];
+            currentSlipId = null;
+            updateMatchesList();
+            updatePreview();
+            updateSavedSlipsList();
+        }
+
+        function updateMatchesList() {
+            const listEl = document.getElementById('matchesList');
+            const totalOddsDisplay = document.getElementById('totalOddsDisplay');
+
+            if (matches.length === 0) {
+                listEl.innerHTML = `
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        <p>No matches added yet.<br>Add your first prediction above!</p>
+                    </div>
+                `;
+                totalOddsDisplay.style.display = 'none';
+                return;
+            }
+
+            let html = '';
+            matches.forEach((match, index) => {
+                html += `
+                    <div class="match-item">
+                        <div class="match-info">
+                            <div class="match-teams">${match.time || ''} ${match.team1} vs ${match.team2}</div>
+                            <div class="match-prediction">${match.prediction}</div>
+                        </div>
+                        <div class="match-status">
+                            <button class="btn-status win ${match.status === 'won' ? 'active' : ''}" onclick="setMatchStatus(${index}, 'won')">✓</button>
+                            <button class="btn-status lose ${match.status === 'lost' ? 'active' : ''}" onclick="setMatchStatus(${index}, 'lost')">✗</button>
+                        </div>
+                        <div class="match-odds">${match.odds.toFixed(2)}</div>
+                        <button class="btn-remove" onclick="removeMatch(${index})">×</button>
+                    </div>
+                `;
+            });
+            listEl.innerHTML = html;
+
+            // Calculate total odds
+            const totalOdds = matches.reduce((acc, m) => acc * m.odds, 1);
+            document.getElementById('totalOddsValue').textContent = totalOdds.toFixed(2);
+            totalOddsDisplay.style.display = 'flex';
+        }
+
+        function drawFootballIcon(x, y, radius) {
+            // White circle
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.strokeStyle = '#333333';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            
+            // Center pentagon
+            const innerRadius = radius * 0.5;
+            ctx.beginPath();
+            for (let i = 0; i < 5; i++) {
+                const angle = (i * 72 - 90) * Math.PI / 180;
+                const px = x + innerRadius * Math.cos(angle);
+                const py = y + innerRadius * Math.sin(angle);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fillStyle = '#333333';
+            ctx.fill();
+            
+            // Lines from pentagon to edge
+            ctx.strokeStyle = '#333333';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < 5; i++) {
+                const angle = (i * 72 - 90) * Math.PI / 180;
+                const px1 = x + innerRadius * Math.cos(angle);
+                const py1 = y + innerRadius * Math.sin(angle);
+                const px2 = x + radius * 0.85 * Math.cos(angle);
+                const py2 = y + radius * 0.85 * Math.sin(angle);
+                ctx.beginPath();
+                ctx.moveTo(px1, py1);
+                ctx.lineTo(px2, py2);
+                ctx.stroke();
+            }
+        }
+
+        function drawCheckmark(x, y, radius) {
+            // Green circle
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#22c55e';
+            ctx.fill();
+            
+            // White checkmark
+            ctx.beginPath();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.moveTo(x - radius * 0.4, y);
+            ctx.lineTo(x - radius * 0.05, y + radius * 0.35);
+            ctx.lineTo(x + radius * 0.4, y - radius * 0.25);
+            ctx.stroke();
+        }
+
+        function drawRedX(x, y, radius) {
+            // Red circle
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#ef4444';
+            ctx.fill();
+            
+            // White X
+            ctx.beginPath();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.moveTo(x - radius * 0.35, y - radius * 0.35);
+            ctx.lineTo(x + radius * 0.35, y + radius * 0.35);
+            ctx.moveTo(x + radius * 0.35, y - radius * 0.35);
+            ctx.lineTo(x - radius * 0.35, y + radius * 0.35);
+            ctx.stroke();
+        }
+
+        function updatePreview() {
+            const rowHeight = 70;
+            const headerHeight = 45;
+            const footerHeight = 45;
+            const padding = 0;
+            const watermarkHeight = 40;
+            
+            const canvasHeight = watermarkHeight + headerHeight + (Math.max(matches.length, 1) * rowHeight) + footerHeight + padding;
+            const canvasWidth = 520;
+            
+            const scale = 2;
+            canvas.width = canvasWidth * scale;
+            canvas.height = Math.max(360, canvasHeight) * scale;
+            canvas.style.width = canvasWidth + 'px';
+            canvas.style.height = Math.max(360, canvasHeight) + 'px';
+            ctx.scale(scale, scale);
+
+            // White background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvasWidth, Math.max(360, canvasHeight));
+
+            // BT AVENUE watermark at top
+            ctx.fillStyle = '#222222';
+            ctx.font = 'bold 15px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('BT AVENUE', canvasWidth / 2, 25);
+
+            // Header row with column titles
+            ctx.fillStyle = '#f8f8f8';
+            ctx.fillRect(0, watermarkHeight, canvasWidth, headerHeight);
+            
+            // Header bottom border
+            ctx.strokeStyle = '#e5e5e5';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, watermarkHeight + headerHeight);
+            ctx.lineTo(canvasWidth, watermarkHeight + headerHeight);
+            ctx.stroke();
+            
+            // Column positions
+            const col1 = 80;      // Checkmark + Ball
+            const col2 = 240;    // Team names (center)
+            const col3 = 390;    // Choices
+            const col4 = 480;    // Values
+            
+            // Header text
+            ctx.fillStyle = '#333333';
+            ctx.font = 'bold 15px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Matches', col2, watermarkHeight + 28);
+            ctx.fillText('Choices', col3, watermarkHeight + 28);
+            ctx.fillText('Values', col4, watermarkHeight + 28);
+
+            if (matches.length === 0) {
+                ctx.fillStyle = '#999999';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('Add matches to see preview', canvasWidth / 2, 200);
+                return;
+            }
+
+            // Draw matches
+            matches.forEach((match, index) => {
+                const y = watermarkHeight + headerHeight + (index * rowHeight);
+                const centerY = y + rowHeight / 2;
+                
+                // Row background (alternating)
+                ctx.fillStyle = index % 2 === 0 ? '#ffffff' : '#fafafa';
+                ctx.fillRect(0, y, canvasWidth, rowHeight);
+                
+                // Row bottom border
+                ctx.strokeStyle = '#eeeeee';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, y + rowHeight);
+                ctx.lineTo(canvasWidth, y + rowHeight);
+                ctx.stroke();
+
+                // Status icon or football icon
+                if (match.status === 'won') {
+                    drawCheckmark(25, centerY, 12);
+                } else if (match.status === 'lost') {
+                    drawRedX(25, centerY, 12);
+                }
+                
+                // Football icon
+                drawFootballIcon(55, centerY, 12);
+
+                // Time display
+                ctx.fillStyle = '#666666';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText(match.time || '', 75, centerY + 4);
+
+                // Team names - side by side with vs
+                ctx.fillStyle = '#222222';
+                ctx.font = '14px Arial';
+                
+                const team1Display = match.team1.length > 12 ? match.team1.substring(0, 10) + '...' : match.team1;
+                const team2Display = match.team2.length > 12 ? match.team2.substring(0, 10) + '...' : match.team2;
+                
+                ctx.textAlign = 'right';
+                ctx.fillText(team1Display, col2 - 20, centerY + 4);
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#888888';
+                ctx.fillText('vs', col2, centerY + 4);
+                ctx.textAlign = 'left';
+                ctx.fillStyle = '#222222';
+                ctx.fillText(team2Display, col2 + 20, centerY + 4);
+
+                // Prediction
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#222222';
+                ctx.font = '13px Arial';
+                ctx.fillText(match.prediction, col3, centerY + 4);
+
+                // Odds
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#222222';
+                ctx.font = 'bold 14px Arial';
+                ctx.fillText(match.odds.toFixed(2), col4, centerY + 4);
+            });
+
+            // Footer with total odds
+            const footerY = watermarkHeight + headerHeight + (matches.length * rowHeight);
+            
+            ctx.fillStyle = '#f8f8f8';
+            ctx.fillRect(0, footerY, canvasWidth, footerHeight);
+            
+            // Footer top border
+            ctx.strokeStyle = '#e5e5e5';
+            ctx.beginPath();
+            ctx.moveTo(0, footerY);
+            ctx.lineTo(canvasWidth, footerY);
+            ctx.stroke();
+            
+            const totalOdds = matches.reduce((acc, m) => acc * m.odds, 1);
+            
+            ctx.fillStyle = '#222222';
+            ctx.font = 'bold 15px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('Total Odds', 30, footerY + 28);
+            
+            ctx.textAlign = 'right';
+            ctx.font = 'bold 17px Arial';
+            ctx.fillText(totalOdds.toFixed(2), canvasWidth - 30, footerY + 28);
+        }
+
+        function downloadImage() {
+            if (matches.length === 0) {
+                alert('Please add at least one match first');
+                return;
+            }
+
+            const link = document.createElement('a');
+            const dateStr = document.getElementById('predictionDate').value || new Date().toISOString().split('T')[0];
+            link.download = `BT_Avenue_Predictions_${dateStr}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function saveSlip() {
+            if (matches.length === 0) {
+                alert('Please add at least one match first');
+                return;
+            }
+
+            const dateStr = document.getElementById('predictionDate').value || new Date().toISOString().split('T')[0];
+            
+            if (currentSlipId) {
+                // Update existing slip
+                const slipIndex = savedSlips.findIndex(s => s.id === currentSlipId);
+                if (slipIndex !== -1) {
+                    savedSlips[slipIndex].matches = [...matches];
+                    savedSlips[slipIndex].date = dateStr;
+                }
+            } else {
+                // Create new slip
+                const slip = {
+                    id: Date.now().toString(),
+                    date: dateStr,
+                    matches: [...matches],
+                    createdAt: new Date().toISOString()
+                };
+                savedSlips.push(slip);
+                currentSlipId = slip.id;
+            }
+
+            localStorage.setItem('btAvenueSlips', JSON.stringify(savedSlips));
+            updateSavedSlipsList();
+            alert('Slip saved!');
+        }
+
+        function autoSaveCurrentSlip() {
+            if (currentSlipId && matches.length > 0) {
+                const slipIndex = savedSlips.findIndex(s => s.id === currentSlipId);
+                if (slipIndex !== -1) {
+                    savedSlips[slipIndex].matches = [...matches];
+                    localStorage.setItem('btAvenueSlips', JSON.stringify(savedSlips));
+                }
+            }
+        }
+
+        function loadSlip(slipId) {
+            const slip = savedSlips.find(s => s.id === slipId);
+            if (slip) {
+                matches = [...slip.matches];
+                currentSlipId = slip.id;
+                document.getElementById('predictionDate').value = slip.date;
+                updateMatchesList();
+                updatePreview();
+                updateSavedSlipsList();
+            }
+        }
+
+        function deleteSlip(slipId, event) {
+            event.stopPropagation();
+            if (confirm('Delete this slip?')) {
+                savedSlips = savedSlips.filter(s => s.id !== slipId);
+                localStorage.setItem('btAvenueSlips', JSON.stringify(savedSlips));
+                if (currentSlipId === slipId) {
+                    currentSlipId = null;
+                }
+                updateSavedSlipsList();
+            }
+        }
+
+        function updateSavedSlipsList() {
+            const section = document.getElementById('savedSlipsSection');
+            const listEl = document.getElementById('savedSlipsList');
+
+            if (savedSlips.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            let html = '';
+            savedSlips.forEach(slip => {
+                const wonCount = slip.matches.filter(m => m.status === 'won').length;
+                const lostCount = slip.matches.filter(m => m.status === 'lost').length;
+                const totalMatches = slip.matches.length;
+                
+                html += `
+                    <div class="slip-item ${currentSlipId === slip.id ? 'active' : ''}" onclick="loadSlip('${slip.id}')">
+                        <div>
+                            <div class="slip-info">${slip.date} (${totalMatches} matches)</div>
+                            <div class="slip-date">✓ ${wonCount} | ✗ ${lostCount} | ○ ${totalMatches - wonCount - lostCount}</div>
+                        </div>
+                        <button class="btn-delete-slip" onclick="deleteSlip('${slip.id}', event)">🗑</button>
+                    </div>
+                `;
+            });
+            listEl.innerHTML = html;
+        }
+
+        // Initial render
+        updatePreview();
+        updateSavedSlipsList();
+    </script>
+</body>
+</html>
