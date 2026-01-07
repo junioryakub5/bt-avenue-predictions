@@ -54,6 +54,18 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .input-section, .preview-section {
+                padding: 15px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
         }
 
         .input-section, .preview-section {
@@ -88,7 +100,7 @@
 
         .form-row {
             display: grid;
-            grid-template-columns: 1fr 1fr 80px 1fr 70px auto;
+            grid-template-columns: 1fr 1fr 1fr 1fr auto;
             gap: 10px;
             align-items: end;
         }
@@ -96,6 +108,12 @@
         @media (max-width: 600px) {
             .form-row {
                 grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            
+            .form-row .btn-add {
+                grid-column: span 2;
+                width: 100%;
             }
         }
 
@@ -432,10 +450,6 @@
                             <input type="text" id="team2" placeholder="e.g. Juventus">
                         </div>
                         <div class="form-group">
-                            <label>Time</label>
-                            <input type="time" id="matchTime" value="15:00">
-                        </div>
-                        <div class="form-group">
                             <label>Prediction</label>
                             <select id="prediction">
                                 <option value="1.5 Over">1.5 Over</option>
@@ -529,7 +543,6 @@
         function addMatch() {
             const team1 = document.getElementById('team1').value.trim();
             const team2 = document.getElementById('team2').value.trim();
-            const matchTime = document.getElementById('matchTime').value;
             const prediction = document.getElementById('prediction').value;
             const odds = parseFloat(document.getElementById('odds').value);
 
@@ -538,7 +551,7 @@
                 return;
             }
 
-            matches.push({ team1, team2, time: matchTime, prediction, odds, status: 'pending' });
+            matches.push({ team1, team2, prediction, odds, status: 'pending' });
             updateMatchesList();
             updatePreview();
             
@@ -593,7 +606,7 @@
                 html += `
                     <div class="match-item">
                         <div class="match-info">
-                            <div class="match-teams">${match.time || ''} ${match.team1} vs ${match.team2}</div>
+                            <div class="match-teams">${match.team1} vs ${match.team2}</div>
                             <div class="match-prediction">${match.prediction}</div>
                         </div>
                         <div class="match-status">
@@ -771,35 +784,29 @@
 
                 // Status icon or football icon
                 if (match.status === 'won') {
-                    drawCheckmark(20, centerY, 10);
+                    drawCheckmark(25, centerY, 10);
                 } else if (match.status === 'lost') {
-                    drawRedX(20, centerY, 10);
+                    drawRedX(25, centerY, 10);
                 }
                 
                 // Football icon
-                drawFootballIcon(45, centerY, 10);
-
-                // Time display
-                ctx.fillStyle = '#666666';
-                ctx.font = '11px Arial';
-                ctx.textAlign = 'left';
-                ctx.fillText(match.time || '', 62, centerY + 4);
+                drawFootballIcon(50, centerY, 10);
 
                 // Team names - side by side with vs
                 ctx.fillStyle = '#222222';
                 ctx.font = '13px Arial';
                 
-                const team1Display = match.team1.length > 10 ? match.team1.substring(0, 8) + '...' : match.team1;
-                const team2Display = match.team2.length > 10 ? match.team2.substring(0, 8) + '...' : match.team2;
+                const team1Display = match.team1.length > 12 ? match.team1.substring(0, 10) + '...' : match.team1;
+                const team2Display = match.team2.length > 12 ? match.team2.substring(0, 10) + '...' : match.team2;
                 
                 ctx.textAlign = 'right';
-                ctx.fillText(team1Display, 210, centerY + 4);
+                ctx.fillText(team1Display, 175, centerY + 4);
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#888888';
-                ctx.fillText('vs', 225, centerY + 4);
+                ctx.fillText('vs', 190, centerY + 4);
                 ctx.textAlign = 'left';
                 ctx.fillStyle = '#222222';
-                ctx.fillText(team2Display, 240, centerY + 4);
+                ctx.fillText(team2Display, 205, centerY + 4);
 
                 // Prediction
                 ctx.textAlign = 'center';
